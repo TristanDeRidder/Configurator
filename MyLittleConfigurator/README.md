@@ -7,6 +7,34 @@ Currently, two official plugins are available:
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
+## 3D setup with react-three/fiber
+
+This project includes a minimal 3D scene using react-three/fiber and drei:
+
+- A Canvas that fills the viewport
+- Ambient and directional lights
+- A spinning box and a ground plane with shadows
+- OrbitControls for mouse navigation
+
+### Run locally
+
+```pwsh
+npm run dev
+```
+
+Open the shown local URL in your browser. You should see a spinning cube you can orbit around with the mouse.
+
+### Build
+
+```pwsh
+npm run build
+```
+
+### Edit the scene
+
+- Main scene code: `src/App.tsx`
+- Global styles (full-viewport): `src/index.css`
+
 ## React Compiler
 
 The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
