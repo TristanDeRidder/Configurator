@@ -27,14 +27,16 @@ const HeadphoneModel = () => {
 
   useLayoutEffect(() => {
     if (ref.current) {
+      // ============================================
       // INTRO ANIMATION (plays on load)
+      // ============================================
       introTl.current = gsap.timeline({
         onComplete: () => {
           introComplete.current = true;
         }
       });
       
-      // Initial rotation and zoom animation
+      // Initial entrance animation - customize as needed
       introTl.current.to(ref.current.rotation, {
         y: Math.PI * 0.0834, // 15 degrees
         z: -(Math.PI * 0.0417), // -7.5 degrees roll
@@ -43,37 +45,106 @@ const HeadphoneModel = () => {
       });
 
       introTl.current.to(ref.current.position, {
-        z: .1, // Move toward camera
+        z: 0.1, // Move toward camera
         duration: 1.5,
         ease: "power3.out",
       }, 0);
 
-      // SCROLL ANIMATION (controls rotation while scrolling)
-      scrollTl.current = gsap.timeline({ paused: true });
-      
-      // Rotate to final position over the scroll duration
-      scrollTl.current.to(ref.current.rotation, {
-        y: Math.PI * 2, // Full 360° rotation (adjust as needed)
-        z: 0, // Reset roll
-        duration: 1, // Duration doesn't matter, controlled by scroll progress
-        ease: "none", // Linear easing works best with scroll
-      });
-
-      // Optional: Add more scroll-based animations
-      // scrollTl.current.to(ref.current.position, {
-      //   x: 2,
-      //   duration: 1,
-      //   ease: "none",
-      // }, 0);
-
       // Auto-play intro after short delay
       setTimeout(() => introTl.current.play(), 500);
+
+      // ============================================
+      // SCROLL KEYFRAME SYSTEM
+      // ============================================
+      // Create timeline for scroll-controlled keyframes
+      scrollTl.current = gsap.timeline({ paused: true });
+
+      // KEYFRAME 1: Initial state (0% scroll)
+      // Starting from intro animation end state
+      
+      // KEYFRAME 2: First scroll section (0-33% of scroll)
+      scrollTl.current.to(ref.current.position, {
+        x: 0,
+        y: 0,
+        z: 0.35, // Move closer
+        duration: 1,
+        ease: "power2.inOut",
+      }, 0); // Start at timeline position 0
+      
+      scrollTl.current.to(ref.current.rotation, {
+        x: 0,
+        y: -(Math.PI * 0.333), // 90 degrees
+        z: 0,
+        duration: 1,
+        ease: "power2.inOut",
+      }, 0);
+      
+      // scrollTl.current.to(ref.current.scale, {
+      //   x: 0.02,
+      //   y: 0.02,
+      //   z: 0.02,
+      //   duration: 1,
+      //   ease: "power2.inOut",
+      // }, 0);
+
+      // // KEYFRAME 3: Second scroll section (33-66% of scroll)
+      // scrollTl.current.to(ref.current.position, {
+      //   x: -1,
+      //   y: 0.5,
+      //   z: 0,
+      //   duration: 1,
+      //   ease: "power2.inOut",
+      // }); // Continues from previous (sequential)
+      
+      // scrollTl.current.to(ref.current.rotation, {
+      //   x: Math.PI * 0.25, // 45 degrees tilt
+      //   y: Math.PI, // 180 degrees
+      //   z: 0,
+      //   duration: 1,
+      //   ease: "power2.inOut",
+      // }, "<"); // "<" means start at same time as previous
+      
+      // scrollTl.current.to(ref.current.scale, {
+      //   x: 0.03, // Zoom in
+      //   y: 0.03,
+      //   z: 0.03,
+      //   duration: 1,
+      //   ease: "power2.inOut",
+      // }, "<");
+
+      // // KEYFRAME 4: Final scroll section (66-100% of scroll)
+      // scrollTl.current.to(ref.current.position, {
+      //   x: 1,
+      //   y: -0.5,
+      //   z: -0.5,
+      //   duration: 1,
+      //   ease: "power2.inOut",
+      // });
+      
+      // scrollTl.current.to(ref.current.rotation, {
+      //   x: 0,
+      //   y: Math.PI * 2, // Full 360 rotation
+      //   z: Math.PI * 0.5, // 90 degree roll
+      //   duration: 1,
+      //   ease: "power2.inOut",
+      // }, "<");
+      
+      // scrollTl.current.to(ref.current.scale, {
+      //   x: 0.025,
+      //   y: 0.025,
+      //   z: 0.025,
+      //   duration: 1,
+      //   ease: "power2.inOut",
+      // }, "<");
+
+      // Add more keyframes by adding more .to() calls
+      // The timeline will automatically distribute them across scroll range
     }
   }, []);
 
   return (
     <group ref={ref}>
-      <primitive object={model.scene} position={[0, 0, 0]} scale={0.02} />
+      <primitive object={model.scene} position={[0, -0.025, 0]} scale={0.02} />
     </group>
   );
 };
