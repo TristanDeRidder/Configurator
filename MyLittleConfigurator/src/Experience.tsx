@@ -1,12 +1,11 @@
 
 import { OrbitControls, useGLTF } from "@react-three/drei";
-import Ground from "./components/Ground/Ground";
-import { useControls, button } from "leva";
+// import { useControls, button } from "leva";
 
 const Experience = () => {
     // Load GLB from src/models using a Vite-friendly URL
     const model = useGLTF(
-      new URL("./models/Headphone.glb", import.meta.url).href
+      new URL("./models/HeadphoneV2.glb", import.meta.url).href
     );
     
     // const { position, color, visible } = useControls({
@@ -32,7 +31,7 @@ const Experience = () => {
     return (
       <>
         {/* Controls */}
-        <OrbitControls makeDefault />
+        {/* <OrbitControls makeDefault /> */}
 
         {/* Lights */}
         <directionalLight position={[1, 2, 3]} intensity={4.5} />
@@ -42,9 +41,6 @@ const Experience = () => {
         <group>
           <primitive object={model.scene} position={[0, 0, 0]} scale={0.02} />
         </group>
-
-        {/* Floor */}
-        <Ground position-y={-1} rotation-x={-Math.PI * 0.5} scale={10} />
       </>
     );
 }
