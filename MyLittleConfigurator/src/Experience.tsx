@@ -1,5 +1,6 @@
 
-import { OrbitControls, ScrollControls, useGLTF } from "@react-three/drei";
+import { OrbitControls, ScrollControls, useGLTF, useScroll } from "@react-three/drei";
+import { useFrame } from "@react-three/fiber";
 import gsap from "gsap";
 import { useLayoutEffect, useRef } from "react";
 import type { Group } from "three";
@@ -11,30 +12,62 @@ const HeadphoneModel = () => {
     new URL("./models/HeadphoneV2.glb", import.meta.url).href
   );
   const ref = useRef<Group>(null);
-  const tl = useRef<gsap.core.Timeline>(null!);
+  const introTl = useRef<gsap.core.Timeline>(null!);
+  const scrollTl = useRef<gsap.core.Timeline>(null!);
+  const introComplete = useRef(false);
+
+  const scroll = useScroll();
+
+  useFrame(() => {
+    // Only control with scroll after intro animation completes
+    if (introComplete.current && scrollTl.current) {
+      scrollTl.current.progress(scroll.offset);
+    }
+  });
 
   useLayoutEffect(() => {
     if (ref.current) {
-      tl.current = gsap.timeline({ paused: true }); // Start paused so model stays visible
+      // INTRO ANIMATION (plays on load)
+      introTl.current = gsap.timeline({
+        onComplete: () => {
+          introComplete.current = true;
+        }
+      });
+      
+      // Initial rotation and zoom animation
+      introTl.current.to(ref.current.rotation, {
+        y: Math.PI * 0.0834, // 15 degrees
+        z: -(Math.PI * 0.0417), // -7.5 degrees roll
+        duration: 2,
+        ease: "power2.out",
+      });
 
-      // Add your animations here
-      // Example: Vertical animation
-      // tl.current.to(ref.current.position, {
-      //   y: 1.5,
+      introTl.current.to(ref.current.position, {
+        z: .1, // Move toward camera
+        duration: 1.5,
+        ease: "power3.out",
+      }, 0);
+
+      // SCROLL ANIMATION (controls rotation while scrolling)
+      scrollTl.current = gsap.timeline({ paused: true });
+      
+      // Rotate to final position over the scroll duration
+      scrollTl.current.to(ref.current.rotation, {
+        y: Math.PI * 2, // Full 360° rotation (adjust as needed)
+        z: 0, // Reset roll
+        duration: 1, // Duration doesn't matter, controlled by scroll progress
+        ease: "none", // Linear easing works best with scroll
+      });
+
+      // Optional: Add more scroll-based animations
+      // scrollTl.current.to(ref.current.position, {
+      //   x: 2,
       //   duration: 1,
-      //   ease: "power3.out",
-      // });
+      //   ease: "none",
+      // }, 0);
 
-      // Example: Rotation animation
-      // tl.current.to(ref.current.rotation, {
-      //   y: Math.PI * 2,
-      //   duration: 2,
-      //   ease: "power2.inOut",
-      // }, 0); // The 0 means it starts at the same time as the position animation
-
-      // To play the timeline, you can use:
-      // tl.current.play();
-      // Or control it with scroll, buttons, etc.
+      // Auto-play intro after short delay
+      setTimeout(() => introTl.current.play(), 500);
     }
   }, []);
 
