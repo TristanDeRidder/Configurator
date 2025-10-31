@@ -6,7 +6,7 @@ import type { Group } from "three";
 import { useScrollContext } from "../../contexts/ScrollContext";
 
 const HeadphoneModel = () => {
-  const model = useGLTF(new URL("./models/HeadphoneV2.glb", import.meta.url).href);
+  const model = useGLTF(new URL("../../models/HeadphoneV2.glb", import.meta.url).href);
   const ref = useRef<Group>(null);
   const introTl = useRef<gsap.core.Timeline>(null!);
   const scrollTl = useRef<gsap.core.Timeline>(null!);
