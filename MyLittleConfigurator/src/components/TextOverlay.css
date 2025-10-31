@@ -1,0 +1,126 @@
+/* Container for all text overlays */
+.text-overlay-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Base styles for all text sections */
+.text-section {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white;
+  transition: opacity 0.5s ease-in-out;
+  pointer-events: none;
+}
+
+/* Common title styles */
+.section-title {
+  font-size: 3rem;
+  margin: 0 0 1rem 0;
+  font-weight: bold;
+}
+
+/* Common description styles */
+.section-description {
+  font-size: 1.5rem;
+  margin: 0;
+  max-width: 600px;
+}
+
+/* Call-to-action button */
+.cta-button {
+  margin-top: 1rem;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  background: white;
+  color: black;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  pointer-events: all;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.cta-button:hover {
+  background: #f0f0f0;
+  transform: scale(1.05);
+}
+
+/* Highlight text */
+.highlight {
+  color: #4CAF50;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+/* Feature list */
+.feature-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 1rem;
+  font-size: 1.2rem;
+}
+
+.feature-list li {
+  margin: 0.5rem 0;
+}
+
+/* ========================================
+   SECTION-SPECIFIC STYLES
+   Customize each section independently
+   ======================================== */
+
+/* Section 1 - Premium Sound */
+.section-1 .section-title {
+  color: #fff;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+}
+
+.section-1 .section-description {
+  color: #e0e0e0;
+}
+
+/* Section 2 - Comfortable Design */
+.section-2 .section-title {
+  color: #FFD700;
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+}
+
+.section-2 .section-description {
+  color: #f5f5f5;
+}
+
+/* Section 3 - Battery Life */
+.section-3 .section-title {
+  color: #4CAF50;
+  text-shadow: 0 0 20px rgba(76, 175, 80, 0.5);
+}
+
+.section-3 .section-description {
+  color: #fff;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .section-title {
+    font-size: 2rem;
+  }
+
+  .section-description {
+    font-size: 1.2rem;
+    max-width: 90%;
+  }
+
+  .highlight {
+    font-size: 1.5rem;
+  }
+}

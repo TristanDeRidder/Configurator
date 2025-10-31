@@ -1,9 +1,10 @@
 
-import { OrbitControls, ScrollControls, useGLTF, useScroll, Html } from "@react-three/drei";
+import { OrbitControls, ScrollControls, useGLTF, useScroll } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import gsap from "gsap";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef } from "react";
 import type { Group } from "three";
+import { useScrollContext } from "./contexts/ScrollContext";
 // import { useControls, button } from "leva";
 
 // Separate component for the scrollable model
@@ -17,8 +18,12 @@ const HeadphoneModel = () => {
   const introComplete = useRef(false);
 
   const scroll = useScroll();
+  const { updateScrollProgress } = useScrollContext();
 
   useFrame(() => {
+    // Update scroll context for text overlay (no re-renders, just ref update)
+    updateScrollProgress(scroll.offset);
+
     // Only control with scroll after intro animation completes
     if (introComplete.current && scrollTl.current) {
       scrollTl.current.progress(scroll.offset);
@@ -119,75 +124,6 @@ const HeadphoneModel = () => {
   );
 };
 
-// Text overlay component that changes based on scroll
-const ScrollText = () => {
-  const scroll = useScroll();
-  const [activeSection, setActiveSection] = useState(0);
-
-  useFrame(() => {
-    const offset = scroll.offset;
-    
-    // Determine which section is active based on scroll position
-    if (offset < 0.33) {
-      setActiveSection(0);
-    } else if (offset < 0.66) {
-      setActiveSection(1);
-    } else {
-      setActiveSection(2);
-    }
-  });
-
-  // Text content for each keyframe section
-  const sections = [
-    {
-      title: "Premium Sound Quality",
-      description: "Experience crystal-clear audio with advanced noise cancellation"
-    },
-    {
-      title: "Comfortable Design",
-      description: "Ergonomic fit for all-day listening comfort"
-    },
-    {
-      title: "Long Battery Life",
-      description: "Up to 30 hours of uninterrupted playback"
-    }
-  ];
-
-  return (
-    <Html fullscreen>
-      <div style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100vh',
-        pointerEvents: 'none',
-        zIndex: 10
-      }}>
-        {sections.map((section, index) => (
-          <div
-            key={index}
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              textAlign: 'center',
-              color: 'white',
-              opacity: activeSection === index ? 1 : 0,
-              transition: 'opacity 0.5s ease-in-out',
-              pointerEvents: 'none'
-            }}
-          >
-            <h1 style={{ fontSize: '3rem', margin: '0 0 1rem 0' }}>{section.title}</h1>
-            <p style={{ fontSize: '1.5rem', margin: 0 }}>{section.description}</p>
-          </div>
-        ))}
-      </div>
-    </Html>
-  );
-};
-
 const Experience = () => {
     // const { position, color, visible } = useControls({
     //   position: {
@@ -221,9 +157,6 @@ const Experience = () => {
         <ScrollControls pages={3} damping={0.5}>
           {/* Models */}
           <HeadphoneModel />
-          
-          {/* Text overlay - inside ScrollControls to access useScroll */}
-          <ScrollText />
         </ScrollControls>
       </>
     );

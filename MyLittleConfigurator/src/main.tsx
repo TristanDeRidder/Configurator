@@ -2,7 +2,9 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import { Canvas } from "@react-three/fiber";
-import Experience from "./Experience"
+import Experience from "./Experience";
+import TextOverlay from "./components/TextOverlay";
+import { ScrollProvider } from "./contexts/ScrollContext";
 
 const cameraSettings = {
   fov: 20,
@@ -13,8 +15,14 @@ const cameraSettings = {
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <Canvas camera={cameraSettings}>
-      <Experience />
-    </Canvas>
+    <ScrollProvider>
+      {/* Text overlay outside Canvas - regular HTML/JSX */}
+      <TextOverlay />
+      
+      {/* 3D Canvas */}
+      <Canvas camera={cameraSettings}>
+        <Experience />
+      </Canvas>
+    </ScrollProvider>
   </StrictMode>
 );
