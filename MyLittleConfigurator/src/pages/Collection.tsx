@@ -17,7 +17,7 @@ const Collection = () => {
               <div className="text-6xl">🎧</div>
             </div>
             
-            <h2 className="text-5xl font-bold mb-4">LUMEN</h2>
+            <h2 className="text-7xl font-bold mb-4" style={{ letterSpacing: '-0.1em' }}>LUMEN</h2>
             <p className="text-primary text-lg mb-6">
               The openness of light — pure, spatial, detailed.
             </p>
@@ -40,8 +40,8 @@ const Collection = () => {
               {/* Add your NOIRÉ headphone image here */}
               <div className="text-6xl">🎧</div>
             </div>
-            
-            <h2 className="text-5xl font-bold mb-4">NOIRÉ</h2>
+
+            <h2 className="text-7xl font-bold mb-4" style={{ letterSpacing: '-0.1em'}}>NOIRÉ</h2>
             <p className="text-bg text-lg mb-6">
               The gravity of depth — warm, resonant, immersive.
             </p>
