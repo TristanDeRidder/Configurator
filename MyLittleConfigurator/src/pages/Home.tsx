@@ -1,5 +1,5 @@
 import { Canvas } from "@react-three/fiber";
-import Experience from "../Experience";
+import Experience from "./canvasses/Experience";
 import TextOverlay from "../components/TextOverlay";
 
 const cameraSettings = {

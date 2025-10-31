@@ -1,4 +1,14 @@
 import { Link, useParams } from "react-router-dom";
+import { Canvas } from "@react-three/fiber";
+import Experience from "./canvasses/ConfiguratorCanvas";
+
+const cameraSettings = {
+  fov: 20,
+  near: 0.1,
+  far: 200,
+  position: [0, 0, 0.5] as [number, number, number],
+};
+
 
 const Configurator = () => {
   const { modelId } = useParams<{ modelId: string }>();
@@ -47,7 +57,9 @@ const Configurator = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-12">
           {/* 3D Preview Area */}
           <div className="border border-white/20 p-8 min-h-[500px] flex items-center justify-center">
-            <p className="text-primary text-xl">3D Model Preview Coming Soon</p>
+            <Canvas camera={cameraSettings}>
+                <Experience />
+            </Canvas>
           </div>
 
           {/* Configuration Options */}
