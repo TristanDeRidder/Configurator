@@ -1,28 +1,22 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import { Canvas } from "@react-three/fiber";
-import Experience from "./Experience";
-import TextOverlay from "./components/TextOverlay";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ScrollProvider } from "./contexts/ScrollContext";
-
-const cameraSettings = {
-  fov: 20,
-  near: 0.1,
-  far: 200,
-  position: [0, 0, 0.5] as [number, number, number],
-};
+import Home from "./pages/Home";
+import Collection from "./pages/Collection";
+import Configurator from "./pages/Configurator";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <ScrollProvider>
-      {/* Text overlay outside Canvas - regular HTML/JSX */}
-      <TextOverlay />
-      
-      {/* 3D Canvas */}
-      <Canvas camera={cameraSettings}>
-        <Experience />
-      </Canvas>
-    </ScrollProvider>
+    <BrowserRouter>
+      <ScrollProvider>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/collection" element={<Collection />} />
+          <Route path="/collection/:modelId" element={<Configurator />} />
+        </Routes>
+      </ScrollProvider>
+    </BrowserRouter>
   </StrictMode>
 );

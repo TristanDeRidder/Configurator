@@ -1,4 +1,5 @@
 import { useScrollContext } from "../contexts/ScrollContext";
+import { Link } from "react-router-dom";
 
 const TextOverlay = () => {
   const { activeSection } = useScrollContext();
@@ -24,7 +25,7 @@ const TextOverlay = () => {
           </h1>
         </div>
 
-        <a className="absolute top-3/4 left-1/8 bg-primary text-bg rounded px-6 py-2" href="">Explore collection</a>
+        <Link className="absolute top-3/4 left-1/8 bg-primary text-bg rounded px-6 py-2 pointer-events-auto" to="/collection">Explore collection</Link>
         <p className="absolute top-3/4 right-1/8 text-primary text-lg">Noiré</p>
       </div>
 
