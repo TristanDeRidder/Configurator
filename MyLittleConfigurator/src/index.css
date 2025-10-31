@@ -1,3 +1,4 @@
+@import "tailwindcss";
 /* Full-viewport layout for the 3D canvas */
 html, body, #root {
   height: 100%;
