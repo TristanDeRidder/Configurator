@@ -1,51 +1,9 @@
 import { useScrollContext } from "../contexts/ScrollContext";
-import { useEffect, useState, useRef } from "react";
 
 const TextOverlay = () => {
-  const { scrollProgressRef } = useScrollContext();
-  const [activeSection, setActiveSection] = useState(0);
-  const rafRef = useRef<number | undefined>(undefined);
+  const { activeSection } = useScrollContext();
 
-  useEffect(() => {
-    // Use requestAnimationFrame for smooth updates
-    const updateSection = () => {
-      const progress = scrollProgressRef.current;
-      
-      let newSection = 0;
-      // Adjusted for 5 pages: 0-20%, 20-40%, 40-60%, 60-80%, 80-100%
-      if (progress < 0.2) {
-        newSection = 0;
-      } else if (progress < 0.4) {
-        newSection = 1;
-      } else if (progress < 0.6) {
-        newSection = 2;
-      } else if (progress < 0.8) {
-        newSection = 3;
-      } else {
-        newSection = 4;
-      }
-
-      setActiveSection(prev => {
-        // Only update if section changed to avoid unnecessary re-renders
-        return prev !== newSection ? newSection : prev;
-      });
-
-      rafRef.current = requestAnimationFrame(updateSection);
-    };
-
-    rafRef.current = requestAnimationFrame(updateSection);
-
-    return () => {
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-      }
-    };
-  }, [scrollProgressRef]);
-
-  // Determine opacity based on active section
-  const getOpacity = (sectionIndex: number) => {
-    return activeSection === sectionIndex ? 1 : 0;
-  };
+  const getOpacity = (index: number) => (activeSection === index ? 1 : 0);
 
   return (
     <div className="fixed top-0 left-0 w-full h-screen pointer-events-none z-10">

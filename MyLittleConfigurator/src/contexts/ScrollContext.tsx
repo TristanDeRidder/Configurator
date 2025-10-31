@@ -1,22 +1,25 @@
-import { createContext, useContext, useRef, useCallback } from 'react';
-import type { ReactNode } from 'react';
+// contexts/ScrollContext.tsx
+import { createContext, useContext, useRef, useState } from "react";
 
 interface ScrollContextType {
   scrollProgressRef: React.MutableRefObject<number>;
   updateScrollProgress: (progress: number) => void;
+  activeSection: number;
+  setActiveSection: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const ScrollContext = createContext<ScrollContextType | undefined>(undefined);
+const ScrollContext = createContext<ScrollContextType>(null!);
 
-export const ScrollProvider = ({ children }: { children: ReactNode }) => {
+export const ScrollProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const scrollProgressRef = useRef(0);
+  const [activeSection, setActiveSection] = useState(0);
 
-  const updateScrollProgress = useCallback((progress: number) => {
+  const updateScrollProgress = (progress: number) => {
     scrollProgressRef.current = progress;
-  }, []);
+  };
 
   return (
-    <ScrollContext.Provider value={{ scrollProgressRef, updateScrollProgress }}>
+    <ScrollContext.Provider value={{ scrollProgressRef, updateScrollProgress, activeSection, setActiveSection }}>
       {children}
     </ScrollContext.Provider>
   );

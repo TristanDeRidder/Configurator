@@ -1,126 +1,97 @@
-
 import { OrbitControls, ScrollControls, useGLTF, useScroll } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import gsap from "gsap";
 import { useLayoutEffect, useRef } from "react";
 import type { Group } from "three";
 import { useScrollContext } from "./contexts/ScrollContext";
-// import { useControls, button } from "leva";
 
-// Separate component for the scrollable model
 const HeadphoneModel = () => {
-  const model = useGLTF(
-    new URL("./models/HeadphoneV2.glb", import.meta.url).href
-  );
+  const model = useGLTF(new URL("./models/HeadphoneV2.glb", import.meta.url).href);
   const ref = useRef<Group>(null);
   const introTl = useRef<gsap.core.Timeline>(null!);
   const scrollTl = useRef<gsap.core.Timeline>(null!);
   const introComplete = useRef(false);
-
   const scroll = useScroll();
-  const { updateScrollProgress } = useScrollContext();
+  const { updateScrollProgress, setActiveSection } = useScrollContext();
 
-  useFrame(() => {
-    // Update scroll context for text overlay (no re-renders, just ref update)
-    updateScrollProgress(scroll.offset);
+ useFrame(() => {
+  const progress = scroll.offset;
+  updateScrollProgress(progress);
 
-    // Only control with scroll after intro animation completes
-    if (introComplete.current && scrollTl.current) {
-      scrollTl.current.progress(scroll.offset);
-    }
-  });
+  if (introComplete.current && scrollTl.current) {
+    scrollTl.current.progress(progress);
+
+    // Section thresholds
+    let section = 0;
+    if (progress >= 0.8) section = 4;
+    else if (progress >= 0.6) section = 3;
+    else if (progress >= 0.4) section = 2;
+    else if (progress >= 0.2) section = 1;
+
+    // Update context only when section changes
+    setActiveSection((prev) => (prev !== section ? section : prev));
+  }
+});
+
 
   useLayoutEffect(() => {
-    if (ref.current) {
-      // ============================================
-      // INTRO ANIMATION (plays on load)
-      // ============================================
-      introTl.current = gsap.timeline({
-        onComplete: () => {
-          introComplete.current = true;
-        }
-      });
-      
-      // Initial entrance animation - customize as needed
-      introTl.current.to(ref.current.rotation, {
-        y: Math.PI * 0.0834, // 15 degrees
-        z: -(Math.PI * 0.0417), // -7.5 degrees roll
-        duration: 2,
-        ease: "power2.out",
-      });
+    if (!ref.current) return;
 
-      introTl.current.to(ref.current.position, {
-        z: 0.1, // Move toward camera
-        duration: 1.5,
-        ease: "power3.out",
-      }, 0);
+    introTl.current = gsap.timeline({
+      onComplete: () => {
+        introComplete.current = true;
+      },
+    });
 
-      // Auto-play intro after short delay
-      setTimeout(() => introTl.current.play(), 500);
+    introTl.current.to(ref.current.rotation, {
+      y: Math.PI * 0.0834,
+      z: -(Math.PI * 0.0417),
+      duration: 2,
+      ease: "power2.out",
+    });
 
-      // ============================================
-      // SCROLL KEYFRAME SYSTEM
-      // ============================================
-      // Create timeline for scroll-controlled keyframes
-      scrollTl.current = gsap.timeline({ paused: true });
+    introTl.current.to(ref.current.position, {
+      z: 0.1,
+      duration: 1.5,
+      ease: "power3.out",
+    }, 0);
 
-      // Set initial state for scroll timeline (matches intro end state)
-      // This ensures the scroll starts from where intro left off
-      scrollTl.current.set(ref.current.rotation, {
-        y: Math.PI * 0.0834, // Same as intro - 15 degrees
-        z: -(Math.PI * 0.0417), // Same as intro - -7.5 degrees roll
-      });
+    scrollTl.current = gsap.timeline({ paused: true });
 
-      scrollTl.current.set(ref.current.position, {
-        x: 0,
-        y: 0,
-        z: 0.1, // Same as intro
-      });
+    // === SECTION 1 (0–20%) ===
+    scrollTl.current.to(ref.current.position, {
+      z: 0.1,
+      duration: 1,
+      ease: "none",
+      onStart: () => setActiveSection(0),
+    });
+    
 
-      // KEYFRAME 1: First section (0-20% scroll / Page 1)
-      // Stay in intro position - add a small duration to hold position
-      scrollTl.current.to(ref.current.rotation, {
-        y: Math.PI * 0.0834, // Hold position
-        z: -(Math.PI * 0.0417),
-        duration: 1,
-        ease: "none",
-      });
+    // === SECTION 2 (20–40%) ===
+    scrollTl.current.to(ref.current.position, {
+      z: 0.35,
+      duration: 1,
+      ease: "power2.inOut",
+      onStart: () => setActiveSection(1),
+    });
 
-      scrollTl.current.to(ref.current.position, {
-        x: 0,
-        y: 0,
-        z: 0.1, // Hold position
-        duration: 1,
-        ease: "none",
-      }, "<");
-      
-      // KEYFRAME 2: Second section (20-40% scroll / Page 2)
-      scrollTl.current.to(ref.current.position, {
-        x: 0,
-        y: 0,
-        z: 0.35, // Move closer
-        duration: 1,
-        ease: "power2.inOut",
-      });
-      
-      scrollTl.current.to(ref.current.rotation, {
-        x: 0,
-        y: -(Math.PI * 0.333), // -60 degrees
-        z: 0,
-        duration: 1,
-        ease: "power2.inOut",
-      }, "<");
+    scrollTl.current.to(ref.current.rotation, {
+      y: -(Math.PI * 0.333),
+      duration: 1,
+      ease: "power2.inOut",
+    }, "<");
 
-      // KEYFRAME 3: Third section (40-60% scroll / Page 3)
-      scrollTl.current.to(ref.current.position, {
-        x: .15,
-        y: 0,
-        z: -(0.15),
-        duration: 1,
-        ease: "power2.inOut",
-      });
-      
-      scrollTl.current.to(ref.current.rotation, {
+    // === SECTION 3 (40–60%) ===
+    scrollTl.current.to(ref.current.position, {
+      x: 0.15,
+      y: 0,
+      z: -0.15,
+      duration: 1,
+      ease: "power2.inOut",
+      onStart: () => setActiveSection(2),
+    });
+
+     scrollTl.current.to(ref.current.rotation, {
         x: -(Math.PI * 0.40),
         y: -(Math.PI * 0.25), 
         z: -(Math.PI * 0.15),
@@ -128,36 +99,32 @@ const HeadphoneModel = () => {
         ease: "power2.inOut",
       }, "<");
 
-      // KEYFRAME 4: Fourth section (60-80% scroll / Page 4)
-      scrollTl.current.to(ref.current.position, {
-        x: .1,
-        z: 0,
-        duration: 1,
-        ease: "power2.inOut",
-      });
+    // === SECTION 4 (60–80%) ===
+    scrollTl.current.to(ref.current.position, {
+      x: 0.1,
+      z: 0,
+      duration: 1,
+      ease: "power2.inOut",
+      onStart: () => setActiveSection(3),
+    });
 
-
-
-      // KEYFRAME 5: Final section (80-100% scroll / Page 5)
-      scrollTl.current.to(ref.current.position, {
-         x: .1,
-         z: 0,
-         duration: 1,
-         ease: "power2.inOut",
-       });
-      
-
-      // Add more keyframes by adding more .to() calls
-      // The timeline will automatically distribute them across scroll range
-    }
-  }, []);
-
+    // === SECTION 5 (80–100%) ===
+    scrollTl.current.to(ref.current.position, {
+      x: 0.1,
+      z: 0,
+      duration: 1,
+      ease: "power2.inOut",
+      onStart: () => setActiveSection(4),
+    });
+  }, [setActiveSection]);
+  
   return (
     <group ref={ref}>
       <primitive object={model.scene} position={[0, -0.025, 0]} scale={0.02} />
     </group>
   );
 };
+
 
 const Experience = () => {
     // const { position, color, visible } = useControls({
