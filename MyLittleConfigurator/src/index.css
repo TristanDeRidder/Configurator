@@ -1,4 +1,25 @@
 @import "tailwindcss";
+
+@theme {
+  --color-bg: #1e1e1e;
+  --color-primary: #D3D1C8;
+}
+
+/* Font declarations */
+@font-face {
+  font-family: 'Bodoni Moda';
+  src: url('/fonts/BodoniModa-VariableFont_opsz,wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Antic Didone';
+  src: url('/fonts/AnticDidone-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-display: swap;
+}
+
 /* Full-viewport layout for the 3D canvas */
 html, body, #root {
   height: 100%;
@@ -12,7 +33,11 @@ body {
   margin: 0;
   background: #111;
   color: #eee;
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Antic Didone', system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+h1 {
+  font-family: 'Bodoni Moda', serif;
 }
 
 /* Ensure the canvas uses all available space */

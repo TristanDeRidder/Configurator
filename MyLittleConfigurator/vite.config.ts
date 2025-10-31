@@ -11,5 +11,6 @@ export default defineConfig({
       },
     }),
     tailwindcss(),
+     require('tailwindcss-text-fill-stroke'),
   ],
 })

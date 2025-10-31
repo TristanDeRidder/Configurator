@@ -64,47 +64,82 @@ const HeadphoneModel = () => {
       // Create timeline for scroll-controlled keyframes
       scrollTl.current = gsap.timeline({ paused: true });
 
-      // KEYFRAME 1: Initial state (0% scroll)
-      // Starting from intro animation end state
-      
-      // KEYFRAME 2: First scroll section (0-33% of scroll)
+      // Set initial state for scroll timeline (matches intro end state)
+      // This ensures the scroll starts from where intro left off
+      scrollTl.current.set(ref.current.rotation, {
+        y: Math.PI * 0.0834, // Same as intro - 15 degrees
+        z: -(Math.PI * 0.0417), // Same as intro - -7.5 degrees roll
+      });
+
+      scrollTl.current.set(ref.current.position, {
+        x: 0,
+        y: 0,
+        z: 0.1, // Same as intro
+      });
+
+      // KEYFRAME 1: First section (0-20% scroll / Page 1)
+      // Stay in intro position - add a small duration to hold position
+      scrollTl.current.to(ref.current.rotation, {
+        y: Math.PI * 0.0834, // Hold position
+        z: -(Math.PI * 0.0417),
+        duration: 1,
+        ease: "none",
+      });
+
       scrollTl.current.to(ref.current.position, {
+        x: 0,
+        y: 0,
+        z: 0.1, // Hold position
+        duration: 1,
+        ease: "none",
+      }, "<");
+      
+      // KEYFRAME 2: Second section (20-40% scroll / Page 2)
+      scrollTl.current.to(ref.current.position, {
+        x: 0,
+        y: 0,
         z: 0.35, // Move closer
         duration: 1,
         ease: "power2.inOut",
-      }, 0); // Start at timeline position 0
+      });
       
       scrollTl.current.to(ref.current.rotation, {
-        y: -(Math.PI * 0.333), // 90 degrees
+        x: 0,
+        y: -(Math.PI * 0.333), // -60 degrees
+        z: 0,
         duration: 1,
         ease: "power2.inOut",
-      }, 0);
+      }, "<");
 
-       // KEYFRAME 3: Second scroll section (33-66% of scroll)
-       scrollTl.current.to(ref.current.position, {
-         x: .15,
-         z: -(0.15),
-         duration: 1,
-         ease: "power2.inOut",
-       }); // Continues from previous (sequential)
+      // KEYFRAME 3: Third section (40-60% scroll / Page 3)
+      scrollTl.current.to(ref.current.position, {
+        x: .15,
+        y: 0,
+        z: -(0.15),
+        duration: 1,
+        ease: "power2.inOut",
+      });
       
-       scrollTl.current.to(ref.current.rotation, {
-         x: -(Math.PI * 0.40),
-         y: -(Math.PI * 0.25), 
-         z: -(Math.PI * 0.15),
-         duration: 1,
-         ease: "power2.inOut",
-       }, "<"); // "<" means start at same time as previous
-      //  scrollTl.current.to(ref.current.rotation, {
-      //    x: -(Math.PI * 0.5), // 45 degrees tilt,
-      //    y: -(Math.PI * 0.25), // 90 degree roll
-      //    duration: 1,
-      //    ease: "power2.inOut",
-      //  }, "<"); // "<" means start at same time as previous
-      
+      scrollTl.current.to(ref.current.rotation, {
+        x: -(Math.PI * 0.40),
+        y: -(Math.PI * 0.25), 
+        z: -(Math.PI * 0.15),
+        duration: 1,
+        ease: "power2.inOut",
+      }, "<");
 
-      // // KEYFRAME 4: Final scroll section (66-100% of scroll)
-       scrollTl.current.to(ref.current.position, {
+      // KEYFRAME 4: Fourth section (60-80% scroll / Page 4)
+      scrollTl.current.to(ref.current.position, {
+        x: .1,
+        z: 0,
+        duration: 1,
+        ease: "power2.inOut",
+      });
+
+
+
+      // KEYFRAME 5: Final section (80-100% scroll / Page 5)
+      scrollTl.current.to(ref.current.position, {
          x: .1,
          z: 0,
          duration: 1,
@@ -154,7 +189,7 @@ const Experience = () => {
         <directionalLight position={[1, 2, 3]} intensity={4.5} />
         <ambientLight intensity={1} />
 
-        <ScrollControls pages={3} damping={0.5}>
+        <ScrollControls pages={5} damping={0.5}>
           {/* Models */}
           <HeadphoneModel />
         </ScrollControls>
