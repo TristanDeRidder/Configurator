@@ -1,7 +1,7 @@
 import { OrbitControls, useGLTF } from "@react-three/drei";
 
 const HeadphoneModel = () => {
-  const model = useGLTF(new URL("../../models/HeadphoneV2.glb", import.meta.url).href);
+  const model = useGLTF(new URL("../../models/HeadphoneV3.glb", import.meta.url).href);
   
   return (
     <group>
