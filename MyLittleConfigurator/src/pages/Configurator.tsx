@@ -1,7 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import { Canvas } from "@react-three/fiber";
-import { useState } from "react";
 import Experience from "./canvasses/ConfiguratorCanvas";
+import { useConfiguratorStore } from "../stores/configuratorStore";
 
 const cameraSettings = {
     fov: 20,
@@ -14,13 +14,21 @@ const cameraSettings = {
 const Configurator = () => {
     const { modelId } = useParams<{ modelId: string }>();
     
-    // Configuration state
-    const [selectedColor, setSelectedColor] = useState<string>("black");
-    const [selectedMaterial, setSelectedMaterial] = useState<string>("aluminum");
-    const [selectedCushion, setSelectedCushion] = useState<string>("comfort");
-    const [selectedCable, setSelectedCable] = useState<string>("charging");
-    const [selectedConnectivity, setSelectedConnectivity] = useState<string>("bluetooth");
-    const [selectedCarry, setSelectedCarry] = useState<string>("none");
+    // Get configuration state and actions from Zustand store
+    const {
+        selectedColor,
+        selectedMaterial,
+        selectedCushion,
+        selectedCable,
+        selectedConnectivity,
+        selectedCarry,
+        setSelectedColor,
+        setSelectedMaterial,
+        setSelectedCushion,
+        setSelectedCable,
+        setSelectedConnectivity,
+        setSelectedCarry,
+    } = useConfiguratorStore();
 
     // Model configurations
     const models = {
@@ -249,7 +257,7 @@ const Configurator = () => {
                     </div>
 
                     {/* 3D Preview Area */}
-                    <div className="border border-white/20 p-8 min-h-[500px] flex items-center justify-center">
+                    <div className="p-8 min-h-[500px] flex items-center justify-center">
                         <Canvas camera={cameraSettings}>
                             <Experience />
                         </Canvas>
