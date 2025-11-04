@@ -50,7 +50,7 @@ const Configurator = () => {
 
     if (!currentModel) {
         return (
-            <div className="min-h-screen bg-black text-white p-8 flex items-center justify-center">
+            <div className="min-h-screen bg-bg text-white p-8 flex items-center justify-center">
                 <div className="text-center">
                     <h1 className="text-4xl font-bold mb-4">Model Not Found</h1>
                     <Link to="/collection" className="text-primary hover:text-white">
@@ -62,7 +62,7 @@ const Configurator = () => {
     }
 
     return (
-        <div className="min-h-screen bg-black text-white p-8">
+        <div className="min-h-screen bg-bg text-white p-8">
             <div className="max-w-7xl mx-auto">
                 <Link to="/collection" className="inline-block text-primary hover:text-white transition-colors mb-8">
                     ← Back to Collection
@@ -259,7 +259,7 @@ const Configurator = () => {
                     {/* 3D Preview Area */}
                     <div className="p-8 min-h-[500px] flex items-center justify-center">
                         <Canvas camera={cameraSettings}>
-                            <Experience />
+                            <Experience modelId={modelId} />
                         </Canvas>
                     </div>
                 </div>
