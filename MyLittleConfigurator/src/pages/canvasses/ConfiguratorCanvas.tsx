@@ -9,20 +9,30 @@ import * as THREE from "three";
 const HeadphoneModel = ({ modelId }: { modelId?: string }) => {
   const selectedCushion = useConfiguratorStore((state) => state.selectedCushion);
   const selectedColor = useConfiguratorStore((state) => state.selectedColor);
+  const selectedConnectivity = useConfiguratorStore((state) => state.selectedConnectivity);
   const previousCushion = useRef(selectedCushion);
+  const previousConnection = useRef(selectedConnectivity);
   const isInitialized = useRef(false);
+  const isJackInitialized = useRef(false);
   
   // Determine which model to load based on modelId
-  const modelName = modelId === "lumen" ? "Lumen" : "Noiré";
+  const modelName = modelId === "lumen" ? "LumenNoEarPiece" : "Noiré";
   
   const model = useGLTF(new URL(`../../models/${modelName}.glb`, import.meta.url).href);
+
   const comfort = useGLTF(new URL("../../models/noiréComfortCups.glb", import.meta.url).href);
   const studio = useGLTF(new URL("../../models/noiréStudioCups.glb", import.meta.url).href);
   const open = useGLTF(new URL("../../models/noiréOpenCups.glb", import.meta.url).href);
-
+  
   const comfortRef = useRef<Group>(null);
   const studioRef = useRef<Group>(null);
   const openRef = useRef<Group>(null);
+
+  const LJack = useGLTF(new URL("../../models/LumenEarPieceWithJack.glb", import.meta.url).href);
+  const LNoJack = useGLTF(new URL("../../models/LumenEarPieceWithoutJack.glb", import.meta.url).href);
+
+  const LJackRef = useRef<Group>(null);
+  const LNoJackRef = useRef<Group>(null);
 
   const targetColorRef = useRef(new THREE.Color());
 
@@ -58,6 +68,8 @@ const HeadphoneModel = ({ modelId }: { modelId?: string }) => {
     updateModelColors(comfortRef.current);
     updateModelColors(studioRef.current);
     updateModelColors(openRef.current);
+    updateModelColors(LJackRef.current);
+    updateModelColors(LNoJackRef.current);
     
     // Also update base model if it has materials to change
     if (model.scene) {
@@ -101,6 +113,35 @@ const HeadphoneModel = ({ modelId }: { modelId?: string }) => {
     isInitialized.current = true;
   }, [selectedCushion]);
 
+  // Initialize jack positions on mount (for Lumen model)
+  useEffect(() => {
+    if (isJackInitialized.current) return;
+    
+    const jackRefs = {
+      wired: LJackRef,
+      bluetooth: LNoJackRef,
+    };
+
+    // Set initial positions - selected one at 0, others far away
+    Object.entries(jackRefs).forEach(([key, ref]) => {
+      if (ref.current) {
+        const isSelected = key === selectedConnectivity;
+        
+        gsap.set(ref.current.position, {
+          x: 0,
+          y: -0.025,
+          z: isSelected ? 0 : -5,
+        });
+        
+        // Set visibility - only selected is visible
+        ref.current.visible = isSelected;
+      }
+    });
+
+    isJackInitialized.current = true;
+  }, [selectedConnectivity]);
+
+  // Animate cushion changes
   useEffect(() => {
     if (!isInitialized.current) return;
     if (previousCushion.current === selectedCushion) return;
@@ -164,6 +205,69 @@ const HeadphoneModel = ({ modelId }: { modelId?: string }) => {
     previousCushion.current = selectedCushion;
   }, [selectedCushion]);
 
+  // Animate connectivity/jack changes (for Lumen model)
+  useEffect(() => {
+    if (!isJackInitialized.current) return;
+    if (previousConnection.current === selectedConnectivity) return;
+
+    const jackRefs = {
+      wired: LJackRef,
+      bluetooth: LNoJackRef,
+    };
+
+    const prevRef = jackRefs[previousConnection.current as keyof typeof jackRefs];
+    const currentRef = jackRefs[selectedConnectivity as keyof typeof jackRefs];
+
+    // Animate out the previous jack (move it back far away)
+    if (prevRef?.current) {
+      const tl = gsap.timeline({
+        onComplete: () => {
+          // Hide after animation completes
+          if (prevRef.current) {
+            prevRef.current.visible = false;
+          }
+        }
+      });
+      
+      // First move back (z-axis)
+      tl.to(prevRef.current.position, {
+        z: -1,
+        duration: 0.4,
+        ease: "power2.in",
+      });
+      
+      // Then move left (x-axis) after back movement is complete
+      tl.to(prevRef.current.position, {
+        x: -1,
+        duration: 0.3,
+        ease: "power2.in",
+      });
+    }
+
+    // Animate in the new jack
+    if (currentRef?.current) {
+      // Make visible first
+      currentRef.current.visible = true;
+      
+      // Start from forward position
+      gsap.set(currentRef.current.position, {
+        x: 0,
+        y: -0.025,
+        z: 5,
+      });
+
+      // Animate to normal position
+      gsap.to(currentRef.current.position, {
+        z: 0,
+        duration: 0.4,
+        delay: 0.2,
+        ease: "power2.out",
+      });
+    }
+
+    previousConnection.current = selectedConnectivity;
+  }, [selectedConnectivity]);
+
   
   return (
     <group>
@@ -183,6 +287,21 @@ const HeadphoneModel = ({ modelId }: { modelId?: string }) => {
           
           <group ref={openRef}>
             <primitive object={open.scene} scale={0.02} />
+          </group>
+        </>
+      )}
+
+      {modelName === "LumenNoEarPiece" && (
+        <>
+          {/* Lumen ear piece with/without jack */}
+          <group ref={LJackRef}>
+            <primitive object={LJack.scene} scale={0.02} />
+          </group>  
+          <group ref={LNoJackRef}>
+            <primitive object={LNoJack.scene} scale={0.02} />
+          </group>
+          <group ref={LJackRef}>
+            <primitive object={LJack.scene} scale={0.02} />
           </group>
         </>
       )}
