@@ -6,7 +6,8 @@ import type { Group } from "three";
 import { useScrollContext } from "../../contexts/ScrollContext";
 
 const HeadphoneModel = () => {
-  const model = useGLTF(new URL("../../models/HeadphoneV3.glb", import.meta.url).href);
+  const noiré = useGLTF(new URL("../../models/HeadphoneV3.glb", import.meta.url).href);
+  const lumen = useGLTF(new URL("../../models/Lumen.glb", import.meta.url).href);
   const ref = useRef<Group>(null);
   const introTl = useRef<gsap.core.Timeline>(null!);
   const scrollTl = useRef<gsap.core.Timeline>(null!);
@@ -120,7 +121,8 @@ const HeadphoneModel = () => {
   
   return (
     <group ref={ref}>
-      <primitive object={model.scene} position={[0, -0.025, 0]} scale={0.02} />
+      <primitive object={noiré.scene} position={[0, -0.025, 0]} scale={0.02} />
+      <primitive object={lumen.scene} position={[0, -0.025, 0]} scale={0.02} />
     </group>
   );
 };
