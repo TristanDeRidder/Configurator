@@ -1,4 +1,14 @@
+import { Canvas } from "@react-three/fiber";
 import { Link } from "react-router-dom";
+import CollectionCanvasLumen from "./canvasses/CollectionCanvasLumen";
+import CollectionCanvasNoiré from "./canvasses/CollectionCanvasNoiré";
+
+const cameraSettings = {
+  fov: 20,
+  near: 0.1,
+  far: 200,
+  position: [0, 0, 0.5] as [number, number, number],
+};
 
 const Collection = () => {
   return (
@@ -13,8 +23,9 @@ const Collection = () => {
           <div className="flex flex-col items-center text-center">
             {/* Placeholder for headphone image */}
             <div className="w-64 h-64 mb-8 flex items-center justify-center">
-              {/* Add your LUMEN headphone image here */}
-              <div className="text-6xl">🎧</div>
+              <Canvas camera={cameraSettings} >
+                <CollectionCanvasLumen />
+              </Canvas>
             </div>
             
             <h2 className="text-7xl font-bold mb-4" style={{ letterSpacing: '-0.1em' }}>LUMEN</h2>
@@ -38,7 +49,9 @@ const Collection = () => {
             {/* Placeholder for headphone image */}
             <div className="w-64 h-64 mb-8 flex items-center justify-center">
               {/* Add your NOIRÉ headphone image here */}
-              <div className="text-6xl">🎧</div>
+              <Canvas camera={cameraSettings} >
+                <CollectionCanvasNoiré />
+              </Canvas>
             </div>
 
             <h2 className="text-7xl font-bold mb-4" style={{ letterSpacing: '-0.1em'}}>NOIRÉ</h2>
