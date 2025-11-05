@@ -97,12 +97,13 @@ const Configurator = () => {
                                     }`} 
                                 />
                                 <button 
-                                    onClick={() => setSelectedColor("gray")}
-                                    className={`w-16 h-16 rounded-full bg-zinc-700 border-2 transition-all ${
-                                        selectedColor === "gray" 
+                                    onClick={() => setSelectedColor("beige")}
+                                    className={`w-16 h-16 rounded-full border-2 transition-all ${
+                                        selectedColor === "beige" 
                                             ? "border-white scale-110" 
                                             : "border-white/20 hover:border-white/60 hover:scale-105"
-                                    }`} 
+                                    }`}
+                                    style={{ backgroundColor: '#E7E5C4' }}
                                 />
                             </div>
                         </div>
@@ -169,31 +170,6 @@ const Configurator = () => {
                                 </div>
                             </div>
                             <div>
-                                <h2 className="text-lg font-bold mb-4">Cable</h2>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <button 
-                                        onClick={() => setSelectedCable("charging")}
-                                        className={`p-2 rounded-lg transition-all ${
-                                            selectedCable === "charging"
-                                                ? "bg-primary text-black border-2 border-primary"
-                                                : "bg-black text-white border border-white/20 hover:border-white/60 hover:bg-white/10"
-                                        }`}
-                                    >
-                                        Charging
-                                    </button>
-                                    <button 
-                                        onClick={() => setSelectedCable("charging-jack")}
-                                        className={`p-2 rounded-lg transition-all ${
-                                            selectedCable === "charging-jack"
-                                                ? "bg-primary text-black border-2 border-primary"
-                                                : "bg-black text-white border border-white/20 hover:border-white/60 hover:bg-white/10"
-                                        }`}
-                                    >
-                                        Charging + Jack
-                                    </button>
-                                </div>
-                            </div>
-                            <div>
                                 <h2 className="text-lg font-bold mb-4">Connectivity</h2>
                                 <div className="grid grid-cols-2 gap-4">
                                     <button 
@@ -218,7 +194,7 @@ const Configurator = () => {
                                     </button>
                                 </div>
                             </div>
-                            <div>
+                            {/* <div>
                                 <h2 className="text-lg font-bold mb-4">Carry</h2>
                                 <div className="grid grid-cols-2 gap-4">
                                     <button 
@@ -242,18 +218,9 @@ const Configurator = () => {
                                         Hard case
                                     </button>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
 
-                        <div className="pt-8">
-                            <div className="flex justify-between items-center mb-4">
-                                <span className="text-2xl font-bold">Total</span>
-                                <span className="text-3xl font-bold">${currentModel.basePrice}</span>
-                            </div>
-                            <button className="w-full bg-primary text-bg rounded px-8 py-4 text-lg font-semibold hover:bg-white/90 transition-colors">
-                                Add to Cart
-                            </button>
-                        </div>
                     </div>
 
                     {/* 3D Preview Area */}

@@ -46,7 +46,7 @@ const HeadphoneModel = ({ modelId }: { modelId?: string }) => {
   const colorMap: Record<string, string> = {
     black: "#1a1a1a",
     silver: "#c0c0c0",
-    gray: "#6b6b6b",
+    beige: "#E7E5C4",
   };
 
   // Update target color when selectedColor changes
