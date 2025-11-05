@@ -49,6 +49,24 @@ const HeadphoneModel = ({ modelId }: { modelId?: string }) => {
     beige: "#E7E5C4",
   };
 
+  // Materials that should change color (frame/body parts only)
+  const COLORABLE_MATERIALS = [
+    'Headphone',
+    'cushion'
+  ];
+
+  // Materials that should NOT change color (cushions, internals, etc.)
+  const NON_COLORABLE_MATERIALS = [
+    'metallic',
+    'leather',
+    'velour',
+    'innerparts',
+    'inner',
+    'fabric',
+    'foam',
+    'padding',
+  ];
+
   // Update target color when selectedColor changes
   useEffect(() => {
     const hexColor = colorMap[selectedColor] || colorMap.black;
@@ -63,7 +81,21 @@ const HeadphoneModel = ({ modelId }: { modelId?: string }) => {
       group.traverse((child: any) => {
         if (child.isMesh && child.material) {
           const material = child.material;
-          if (material.color) {
+          const materialName = (material.name || '').toLowerCase();
+          
+          // FIRST: Check if material is in the non-colorable list (exclusions have priority)
+          const isNonColorable = NON_COLORABLE_MATERIALS.some(name => 
+            materialName.includes(name.toLowerCase())
+          );
+          
+          if (isNonColorable) return;
+          
+          // SECOND: Only update if material is in the colorable list
+          const shouldUpdateColor = COLORABLE_MATERIALS.some(name => 
+            materialName.includes(name.toLowerCase())
+          );
+          
+          if (material.color && shouldUpdateColor) {
             material.color.lerp(targetColorRef.current, 0.1);
           }
         }
@@ -79,16 +111,9 @@ const HeadphoneModel = ({ modelId }: { modelId?: string }) => {
     updateModelColors(LJackRef.current);
     updateModelColors(LNoJackRef.current);
     
-    // Also update base model if it has materials to change
+    // Also update base model
     if (model.scene) {
-      model.scene.traverse((child: any) => {
-        if (child.isMesh && child.material) {
-          const material = child.material;
-          if (material.color) {
-            material.color.lerp(targetColorRef.current, 0.1);
-          }
-        }
-      });
+      updateModelColors(model.scene as any);
     }
   });
 
