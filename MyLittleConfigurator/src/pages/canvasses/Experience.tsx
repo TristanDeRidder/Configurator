@@ -289,7 +289,7 @@ const Experience = () => {
 
         {/* HTML overlay (z-index + pointer events restored for interactive elements) */}
         <Scroll html>
-          <div style={{ position: "relative", zIndex: 10, pointerEvents: "auto" }}>
+          <div style={{ position: "relative", zIndex: 10, pointerEvents: "auto", width: "100vw" }}>
             <TextOverlay />
           </div>
         </Scroll>
