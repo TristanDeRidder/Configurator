@@ -1,6 +1,5 @@
 import { Canvas } from "@react-three/fiber";
 import Experience from "./canvasses/Experience";
-import TextOverlay from "../components/TextOverlay";
 
 const cameraSettings = {
   fov: 20,
@@ -11,15 +10,11 @@ const cameraSettings = {
 
 const Home = () => {
   return (
-    <>
-      {/* Text overlay outside Canvas - regular HTML/JSX */}
-      <TextOverlay />
-      
-      {/* 3D Canvas */}
+    <div className="w-full h-screen">
       <Canvas camera={cameraSettings}>
         <Experience />
       </Canvas>
-    </>
+    </div>
   );
 };
 

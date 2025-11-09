@@ -1,4 +1,5 @@
-import { StrictMode } from "react";
+// StrictMode removed - causes double-mount warnings with drei's <Scroll html>
+// import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -8,7 +9,10 @@ import Collection from "./pages/Collection";
 import Configurator from "./pages/Configurator";
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
+  // StrictMode removed to prevent double-mount warning with drei's <Scroll html>
+  // which internally creates its own React root. StrictMode causes double mounting
+  // in dev, triggering "createRoot() called twice" warnings.
+  // <StrictMode>
     <BrowserRouter>
       <ScrollProvider>
         <Routes>
@@ -18,5 +22,5 @@ createRoot(document.getElementById("root")!).render(
         </Routes>
       </ScrollProvider>
     </BrowserRouter>
-  </StrictMode>
+  // </StrictMode>
 );
