@@ -10,6 +10,7 @@ const HeadphoneModel = ({ modelId }: { modelId?: string }) => {
   const selectedCushion = useConfiguratorStore((state) => state.selectedCushion);
   const selectedColor = useConfiguratorStore((state) => state.selectedColor);
   const selectedConnectivity = useConfiguratorStore((state) => state.selectedConnectivity);
+  const selectedMaterial = useConfiguratorStore((state) => state.selectedMaterial);
   const previousCushion = useRef(selectedCushion);
   const previousConnection = useRef(selectedConnectivity);
   const isInitialized = useRef(false);
@@ -41,6 +42,14 @@ const HeadphoneModel = ({ modelId }: { modelId?: string }) => {
   const LNoJackRef = useRef<Group>(null);
 
   const targetColorRef = useRef(new THREE.Color());
+  const targetRoughnessRef = useRef(0.6); // default brushed aluminum roughness
+  const targetMetalnessRef = useRef(0.5); // default brushed aluminum metalness
+
+  // Material finish presets (tweak as desired)
+  const MATERIAL_PRESETS: Record<string, { roughness: number; metalness: number }> = {
+    aluminum: { roughness: 0.6, metalness: 0.5 }, // brushed look: more diffuse, less metallic shine
+    titanium: { roughness: 0.35, metalness: 0.85 }, // polished look: smoother surface, higher metallic reflectance
+  };
 
   // Color mapping
   const colorMap: Record<string, string> = {
@@ -52,11 +61,11 @@ const HeadphoneModel = ({ modelId }: { modelId?: string }) => {
   // Materials that should change color (frame/body parts only)
   const COLORABLE_MATERIALS = [
     'Headphone',
-    'cushion'
   ];
 
   // Materials that should NOT change color (cushions, internals, etc.)
   const NON_COLORABLE_MATERIALS = [
+    'cushion',
     'metallic',
     'leather',
     'velour',
@@ -72,6 +81,13 @@ const HeadphoneModel = ({ modelId }: { modelId?: string }) => {
     const hexColor = colorMap[selectedColor] || colorMap.black;
     targetColorRef.current.set(hexColor);
   }, [selectedColor]);
+
+  // Update roughness/metalness targets when material finish changes
+  useEffect(() => {
+    const preset = MATERIAL_PRESETS[selectedMaterial] || MATERIAL_PRESETS.aluminum;
+    targetRoughnessRef.current = preset.roughness;
+    targetMetalnessRef.current = preset.metalness;
+  }, [selectedMaterial]);
 
   // Smooth color interpolation
   useFrame(() => {
@@ -97,6 +113,17 @@ const HeadphoneModel = ({ modelId }: { modelId?: string }) => {
           
           if (material.color && shouldUpdateColor) {
             material.color.lerp(targetColorRef.current, 0.1);
+          }
+
+          // Apply finish (roughness/metalness) only for materials named 'Headphone'
+          if (materialName.includes('headphone')) {
+            if (typeof material.roughness === 'number') {
+              material.roughness = THREE.MathUtils.lerp(material.roughness, targetRoughnessRef.current, 0.15);
+            }
+            if (typeof material.metalness === 'number') {
+              material.metalness = THREE.MathUtils.lerp(material.metalness, targetMetalnessRef.current, 0.15);
+            }
+            // If using a PBR map setup, you could optionally adjust envMapIntensity here too
           }
         }
       });
