@@ -14,12 +14,19 @@
 }
 
 @font-face {
+  font-family: 'Bodoni Moda Italic';
+  src: url('/fonts/BodoniModa-VariableFont_opsz,wght,slnt.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
   font-family: 'Antic Didone';
   src: url('/fonts/AnticDidone-Regular.ttf') format('truetype');
   font-weight: normal;
   font-display: swap;
 }
-
 /* Full-viewport layout for the 3D canvas */
 html, body, #root {
   height: 100%;
