@@ -3,8 +3,19 @@ import { useConfiguratorStore } from "../stores/configuratorStore";
 import { useRef, useEffect } from "react";
 import gsap from "gsap";
 import type { Group } from "three";
-import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import useMaterialAnimator from "../hooks/useMaterialAnimator";
+import {
+  LUMEN_NO_EAR,
+  NOIRE_NO_EAR,
+  NOIRE_EAR_WITH_JACK,
+  NOIRE_EAR_NO_JACK,
+  NOIRE_COMFORT_CUPS,
+  NOIRE_STUDIO_CUPS,
+  NOIRE_OPEN_CUPS,
+  LUMEN_EAR_WITH_JACK,
+  LUMEN_EAR_NO_JACK,
+} from "../utils/models";
 
 const ConfiguratorHeadphone = ({ modelId }: { modelId?: string }) => {
   const selectedCushion = useConfiguratorStore((state) => state.selectedCushion);
@@ -18,25 +29,26 @@ const ConfiguratorHeadphone = ({ modelId }: { modelId?: string }) => {
   
   // Determine which model to load based on modelId
   const modelName = modelId === "lumen" ? "LumenNoEarPiece" : "NoiréNoEarpiece";
-  
-  const model = useGLTF(new URL(`../models/${modelName}.glb`, import.meta.url).href);
 
-  const NJack = useGLTF(new URL("../models/NoiréEarpieceWithJack.glb", import.meta.url).href);
-  const NNoJack = useGLTF(new URL("../models/NoiréEarpieceWithoutJack.glb", import.meta.url).href);
+  const modelUrl = modelId === "lumen" ? LUMEN_NO_EAR : NOIRE_NO_EAR;
+  const model = useGLTF(modelUrl);
+
+  const NJack = useGLTF(NOIRE_EAR_WITH_JACK);
+  const NNoJack = useGLTF(NOIRE_EAR_NO_JACK);
 
   const NJackRef = useRef<Group>(null);
   const NNoJackRef = useRef<Group>(null);
 
-  const comfort = useGLTF(new URL("../models/NoiréComfortCups.glb", import.meta.url).href);
-  const studio = useGLTF(new URL("../models/NoiréStudioCups.glb", import.meta.url).href);
-  const open = useGLTF(new URL("../models/NoiréOpenCups.glb", import.meta.url).href);
+  const comfort = useGLTF(NOIRE_COMFORT_CUPS);
+  const studio = useGLTF(NOIRE_STUDIO_CUPS);
+  const open = useGLTF(NOIRE_OPEN_CUPS);
   
   const comfortRef = useRef<Group>(null);
   const studioRef = useRef<Group>(null);
   const openRef = useRef<Group>(null);
 
-  const LJack = useGLTF(new URL("../models/LumenEarPieceWithJack.glb", import.meta.url).href);
-  const LNoJack = useGLTF(new URL("../models/LumenEarPieceWithoutJack.glb", import.meta.url).href);
+  const LJack = useGLTF(LUMEN_EAR_WITH_JACK);
+  const LNoJack = useGLTF(LUMEN_EAR_NO_JACK);
 
   const LJackRef = useRef<Group>(null);
   const LNoJackRef = useRef<Group>(null);
@@ -90,57 +102,15 @@ const ConfiguratorHeadphone = ({ modelId }: { modelId?: string }) => {
   }, [selectedMaterial]);
 
   // Smooth color interpolation
-  useFrame(() => {
-    const updateModelColors = (group: Group | null) => {
-      if (!group) return;
-      
-      group.traverse((child: any) => {
-        if (child.isMesh && child.material) {
-          const material = child.material;
-          const materialName = (material.name || '').toLowerCase();
-          
-          // FIRST: Check if material is in the non-colorable list (exclusions have priority)
-          const isNonColorable = NON_COLORABLE_MATERIALS.some(name => 
-            materialName.includes(name.toLowerCase())
-          );
-          
-          if (isNonColorable) return;
-          
-          // SECOND: Only update if material is in the colorable list
-          const shouldUpdateColor = COLORABLE_MATERIALS.some(name => 
-            materialName.includes(name.toLowerCase())
-          );
-          
-          if (material.color && shouldUpdateColor) {
-            material.color.lerp(targetColorRef.current, 0.1);
-          }
+  const baseRef = useRef<Group>(null);
 
-          // Apply finish (roughness/metalness) only for materials named 'Headphone'
-          if (materialName.includes('headphone')) {
-            if (typeof material.roughness === 'number') {
-              material.roughness = THREE.MathUtils.lerp(material.roughness, targetRoughnessRef.current, 0.15);
-            }
-            if (typeof material.metalness === 'number') {
-              material.metalness = THREE.MathUtils.lerp(material.metalness, targetMetalnessRef.current, 0.15);
-            }
-          }
-        }
-      });
-    };
-
-    // Update all models
-    updateModelColors(NJackRef.current);
-    updateModelColors(NNoJackRef.current);
-    updateModelColors(comfortRef.current);
-    updateModelColors(studioRef.current);
-    updateModelColors(openRef.current);
-    updateModelColors(LJackRef.current);
-    updateModelColors(LNoJackRef.current);
-    
-    // Also update base model
-    if (model.scene) {
-      updateModelColors(model.scene as any);
-    }
+  useMaterialAnimator({
+    groups: [NJackRef, NNoJackRef, comfortRef, studioRef, openRef, LJackRef, LNoJackRef, baseRef],
+    targetColorRef,
+    targetRoughnessRef,
+    targetMetalnessRef,
+    colorableNames: COLORABLE_MATERIALS,
+    nonColorableNames: NON_COLORABLE_MATERIALS,
   });
 
   // Initialize positions on mount
@@ -341,7 +311,9 @@ const ConfiguratorHeadphone = ({ modelId }: { modelId?: string }) => {
   return (
     <group>
       {/* Base headphone model (without cups) */}
-      <primitive object={model.scene} position={[0, -0.025, 0]} scale={0.02} />
+      <group ref={baseRef}>
+        <primitive object={model.scene} position={[0, -0.025, 0]} scale={0.02} />
+      </group>
 
       {modelName === "NoiréNoEarpiece" && (
         <>
