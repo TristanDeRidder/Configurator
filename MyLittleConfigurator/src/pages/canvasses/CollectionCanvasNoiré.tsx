@@ -1,13 +1,12 @@
-import { OrbitControls } from "@react-three/drei";
-
 import CanvasLights from "../../components/CanvasLights";
 import SimpleGLTFModel from "../../components/SimpleGLTFModel";
+import CanvasControls from "../../components/CanvasControls";
 
 const collectionCanvas = () => {
     return (
         <>
         <CanvasLights />
-        <OrbitControls makeDefault />
+        <CanvasControls />
 
         <SimpleGLTFModel src={new URL("../../models/HeadphoneV3.glb", import.meta.url).href} />
 
