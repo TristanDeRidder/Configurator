@@ -27,7 +27,6 @@ const ConfiguratorHeadphone = ({ modelId }: { modelId?: string }) => {
   const isInitialized = useRef(false);
   const isJackInitialized = useRef(false);
   
-  // Determine which model to load based on modelId
   const modelName = modelId === "lumen" ? "LumenNoEarPiece" : "NoiréNoEarpiece";
 
   const modelUrl = modelId === "lumen" ? LUMEN_NO_EAR : NOIRE_NO_EAR;
@@ -53,14 +52,15 @@ const ConfiguratorHeadphone = ({ modelId }: { modelId?: string }) => {
   const LJackRef = useRef<Group>(null);
   const LNoJackRef = useRef<Group>(null);
 
+  //Default material targets
   const targetColorRef = useRef(new THREE.Color());
-  const targetRoughnessRef = useRef(0.6); // default brushed aluminum roughness
-  const targetMetalnessRef = useRef(0.5); // default brushed aluminum metalness
+  const targetRoughnessRef = useRef(0.6);
+  const targetMetalnessRef = useRef(0.5);
 
   // Material finish presets (tweak as desired)
   const MATERIAL_PRESETS: Record<string, { roughness: number; metalness: number }> = {
-    aluminum: { roughness: 0.6, metalness: 0.5 }, // brushed look: more diffuse, less metallic shine
-    titanium: { roughness: 0.35, metalness: 0.85 }, // polished look: smoother surface, higher metallic reflectance
+    aluminum: { roughness: 0.6, metalness: 0.5 }, 
+    titanium: { roughness: 0.45, metalness: 0.85 },
   };
 
   // Color mapping
@@ -70,12 +70,12 @@ const ConfiguratorHeadphone = ({ modelId }: { modelId?: string }) => {
     beige: "#E7E5C4",
   };
 
-  // Materials that should change color (frame/body parts only)
+  // Changeable material names
   const COLORABLE_MATERIALS = [
     'Headphone',
   ];
 
-  // Materials that should NOT change color (cushions, internals, etc.)
+  // Unchangeable material names
   const NON_COLORABLE_MATERIALS = [
     'cushion',
     'metallic',
@@ -88,20 +88,19 @@ const ConfiguratorHeadphone = ({ modelId }: { modelId?: string }) => {
     'padding',
   ];
 
-  // Update target color when selectedColor changes
+  // Update target color
   useEffect(() => {
     const hexColor = colorMap[selectedColor] || colorMap.black;
     targetColorRef.current.set(hexColor);
   }, [selectedColor]);
 
-  // Update roughness/metalness targets when material finish changes
+  // Update roughness/metalness targets
   useEffect(() => {
     const preset = MATERIAL_PRESETS[selectedMaterial] || MATERIAL_PRESETS.aluminum;
     targetRoughnessRef.current = preset.roughness;
     targetMetalnessRef.current = preset.metalness;
   }, [selectedMaterial]);
 
-  // Smooth color interpolation
   const baseRef = useRef<Group>(null);
 
   useMaterialAnimator({
@@ -113,7 +112,7 @@ const ConfiguratorHeadphone = ({ modelId }: { modelId?: string }) => {
     nonColorableNames: NON_COLORABLE_MATERIALS,
   });
 
-  // Initialize positions on mount
+  // Initialize cushion options
   useEffect(() => {
     if (isInitialized.current) return;
     
@@ -123,7 +122,7 @@ const ConfiguratorHeadphone = ({ modelId }: { modelId?: string }) => {
       open: openRef,
     };
 
-    // Set initial positions - selected one at 0, others far away
+    // Set initial positions
     Object.entries(refs).forEach(([key, ref]) => {
       if (ref.current) {
         const isSelected = key === selectedCushion;
@@ -134,7 +133,6 @@ const ConfiguratorHeadphone = ({ modelId }: { modelId?: string }) => {
           z: isSelected ? 0 : -5,
         });
         
-        // Set visibility - only selected is visible
         ref.current.visible = isSelected;
       }
     });
@@ -142,7 +140,7 @@ const ConfiguratorHeadphone = ({ modelId }: { modelId?: string }) => {
     isInitialized.current = true;
   }, [selectedCushion]);
 
-  // Initialize jack positions on mount (for both Lumen and Noiré models)
+  // Initialize jack options
   useEffect(() => {
     if (isJackInitialized.current) return;
     
@@ -151,7 +149,7 @@ const ConfiguratorHeadphone = ({ modelId }: { modelId?: string }) => {
       bluetooth: [LNoJackRef, NNoJackRef],
     };
 
-    // Set initial positions - selected one at 0, others far away
+    // Set initial positions
     Object.entries(jackRefs).forEach(([key, refs]) => {
       refs.forEach(ref => {
         if (ref.current) {
@@ -163,7 +161,6 @@ const ConfiguratorHeadphone = ({ modelId }: { modelId?: string }) => {
             z: isSelected ? 0 : -5,
           });
           
-          // Set visibility - only selected is visible
           ref.current.visible = isSelected;
         }
       });
@@ -186,25 +183,22 @@ const ConfiguratorHeadphone = ({ modelId }: { modelId?: string }) => {
     const prevRef = refs[previousCushion.current as keyof typeof refs];
     const currentRef = refs[selectedCushion as keyof typeof refs];
 
-    // Animate out the previous cushion (move it back far away)
+    // Animate out the previous cushion
     if (prevRef?.current) {
       const tl = gsap.timeline({
         onComplete: () => {
-          // Hide after animation completes
           if (prevRef.current) {
             prevRef.current.visible = false;
           }
         }
       });
       
-      // First move back (z-axis)
       tl.to(prevRef.current.position, {
         z: -1,
         duration: 0.4,
         ease: "power2.in",
       });
       
-      // Then move left (x-axis) after back movement is complete
       tl.to(prevRef.current.position, {
         x: -1,
         duration: 0.3,
@@ -214,17 +208,13 @@ const ConfiguratorHeadphone = ({ modelId }: { modelId?: string }) => {
 
     // Animate in the new cushion
     if (currentRef?.current) {
-      // Make visible first
       currentRef.current.visible = true;
-      
-      // Start from forward position
       gsap.set(currentRef.current.position, {
         x: 0,
         y: -0.025,
         z: 5,
       });
 
-      // Animate to normal position
       gsap.to(currentRef.current.position, {
         z: 0,
         duration: 0.4,
@@ -236,7 +226,7 @@ const ConfiguratorHeadphone = ({ modelId }: { modelId?: string }) => {
     previousCushion.current = selectedCushion;
   }, [selectedCushion]);
 
-  // Animate connectivity/jack changes (for both Lumen and Noiré models)
+  // Animate jack options
   useEffect(() => {
     if (!isJackInitialized.current) return;
     if (previousConnection.current === selectedConnectivity) return;
@@ -249,27 +239,24 @@ const ConfiguratorHeadphone = ({ modelId }: { modelId?: string }) => {
     const prevRefs = jackRefs[previousConnection.current as keyof typeof jackRefs];
     const currentRefs = jackRefs[selectedConnectivity as keyof typeof jackRefs];
 
-    // Animate out the previous jacks (move them back far away)
+    // Animate out the previous jacks
     if (prevRefs) {
       prevRefs.forEach(prevRef => {
         if (prevRef?.current) {
           const tl = gsap.timeline({
             onComplete: () => {
-              // Hide after animation completes
               if (prevRef.current) {
                 prevRef.current.visible = false;
               }
             }
           });
           
-          // First move back (z-axis)
           tl.to(prevRef.current.position, {
             z: -1,
             duration: 0.4,
             ease: "power2.in",
           });
           
-          // Then move left (x-axis) after back movement is complete
           tl.to(prevRef.current.position, {
             x: -1,
             duration: 0.3,
@@ -283,17 +270,13 @@ const ConfiguratorHeadphone = ({ modelId }: { modelId?: string }) => {
     if (currentRefs) {
       currentRefs.forEach(currentRef => {
         if (currentRef?.current) {
-          // Make visible first
           currentRef.current.visible = true;
-          
-          // Start from forward position
           gsap.set(currentRef.current.position, {
             x: 0,
             y: -0.025,
             z: 5,
           });
 
-          // Animate to normal position
           gsap.to(currentRef.current.position, {
             z: 0,
             duration: 0.4,

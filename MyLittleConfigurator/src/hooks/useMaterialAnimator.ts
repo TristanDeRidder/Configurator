@@ -29,7 +29,7 @@ export default function useMaterialAnimator({
           const material = child.material;
           const materialName = (material.name || '').toLowerCase();
 
-          // Exclusions have priority
+          // Exclusions
           const isNonColorable = nonColorableNames.some(name => materialName.includes(name.toLowerCase()));
           if (isNonColorable) return;
 

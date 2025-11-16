@@ -6,14 +6,11 @@ const Experience = ({ modelId }: { modelId?: string }) => {
 
     return (
       <>
-        {/* Controls */}
         <CanvasControls enableZoom={false} />
 
-        {/* Lights */}
         <directionalLight position={[1, 2, 3]} intensity={4.5} />
         <Environment preset="studio" />
 
-        {/* Models */}
         <ConfiguratorHeadphone modelId={modelId} />
       </>
     );

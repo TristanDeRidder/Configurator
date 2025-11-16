@@ -194,31 +194,6 @@ const Configurator = () => {
                                     </button>
                                 </div>
                             </div>
-                            {/* <div>
-                                <h2 className="text-lg font-bold mb-4">Carry</h2>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <button 
-                                        onClick={() => setSelectedCarry("none")}
-                                        className={`p-2 rounded-lg transition-all ${
-                                            selectedCarry === "none"
-                                                ? "bg-primary text-black border-2 border-primary"
-                                                : "bg-black text-white border border-white/20 hover:border-white/60 hover:bg-white/10"
-                                        }`}
-                                    >
-                                        No case
-                                    </button>
-                                    <button 
-                                        onClick={() => setSelectedCarry("hard")}
-                                        className={`p-2 rounded-lg transition-all ${
-                                            selectedCarry === "hard"
-                                                ? "bg-primary text-black border-2 border-primary"
-                                                : "bg-black text-white border border-white/20 hover:border-white/60 hover:bg-white/10"
-                                        }`}
-                                    >
-                                        Hard case
-                                    </button>
-                                </div>
-                            </div> */}
                         </div>
 
                     </div>

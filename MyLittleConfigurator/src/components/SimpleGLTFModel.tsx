@@ -14,6 +14,5 @@ export default function SimpleGLTFModel({
 }: Props) {
   const model = useGLTF(src);
 
-  // `src` should be a resolved URL (e.g. `new URL(path, import.meta.url).href`)
   return <primitive object={(model as any).scene} position={position} scale={scale} />;
 }
