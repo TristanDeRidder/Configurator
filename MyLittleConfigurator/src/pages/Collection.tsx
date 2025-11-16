@@ -13,7 +13,6 @@ const cameraSettings = {
 const Collection = () => {
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
-      {/* Left Half - Dark Background (LUMEN) */}
       <div className="w-full md:w-1/2 bg-bg text-white p-8 md:p-16 flex flex-col justify-center items-center min-h-screen">
         <div className="max-w-xl w-full">
           <Link to="/" className="inline-block text-primary hover:text-white transition-colors mb-8">
@@ -21,7 +20,6 @@ const Collection = () => {
           </Link>
           
           <div className="flex flex-col items-center text-center">
-            {/* Placeholder for headphone image */}
             <div className="w-64 h-64 mb-8 flex items-center justify-center">
               <Canvas camera={cameraSettings} >
                 <CollectionCanvasLumen />
@@ -42,13 +40,10 @@ const Collection = () => {
         </div>
       </div>
 
-      {/* Right Half - Light Background (NOIRÉ) */}
       <div className="w-full md:w-1/2 bg-primary text-bg p-8 md:p-16 flex flex-col justify-center items-center min-h-screen">
         <div className="max-w-xl w-full">
           <div className="flex flex-col items-center text-center">
-            {/* Placeholder for headphone image */}
             <div className="w-64 h-64 mb-8 flex items-center justify-center">
-              {/* Add your NOIRÉ headphone image here */}
               <Canvas camera={cameraSettings} >
                 <CollectionCanvasNoiré />
               </Canvas>
