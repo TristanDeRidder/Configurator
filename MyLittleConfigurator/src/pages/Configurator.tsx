@@ -19,15 +19,11 @@ const Configurator = () => {
         selectedColor,
         selectedMaterial,
         selectedCushion,
-        selectedCable,
         selectedConnectivity,
-        selectedCarry,
         setSelectedColor,
         setSelectedMaterial,
         setSelectedCushion,
-        setSelectedCable,
         setSelectedConnectivity,
-        setSelectedCarry,
     } = useConfiguratorStore();
 
     // Model configurations
