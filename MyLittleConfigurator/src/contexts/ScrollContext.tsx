@@ -25,6 +25,7 @@ export const ScrollProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useScrollContext = () => {
   const context = useContext(ScrollContext);
   if (!context) {

@@ -24,6 +24,7 @@ export default function useMaterialAnimator({
     const updateModelColors = (group: Group | null) => {
       if (!group) return;
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       group.traverse((child: any) => {
         if (child.isMesh && child.material) {
           const material = child.material;

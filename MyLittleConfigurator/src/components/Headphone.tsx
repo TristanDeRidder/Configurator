@@ -1,8 +1,26 @@
-import React from 'react'
 import { useGLTF } from '@react-three/drei'
+import type { ThreeElements } from '@react-three/fiber'
+import type { Material, Mesh } from 'three'
 
-export function Headphone(props: any) {
-  const { nodes, materials } = useGLTF('./models//HeadphoneV2.glb')
+type HeadphoneGLTF = {
+  nodes: {
+    Cube003: Mesh
+    Cube004: Mesh
+    Circle013: Mesh
+    Circle013_1: Mesh
+    Circle013_2: Mesh
+    Circle005: Mesh
+    Circle008: Mesh
+    Cylinder002: Mesh
+    Circle006: Mesh
+    Circle009: Mesh
+    Circle020: Mesh
+  }
+  materials: Record<string, Material>
+}
+
+export function Headphone(props: ThreeElements['group']) {
+  const { nodes, materials } = useGLTF('./models/HeadphoneV2.glb') as unknown as HeadphoneGLTF
   return (
     <group {...props} dispose={null}>
       <mesh geometry={nodes.Cube003.geometry} material={materials.Headphone} position={[1.183, 2.888, 0.002]} scale={[0.14, 0.14, 0.218]} />

@@ -1,4 +1,3 @@
-import React from 'react';
 import { useGLTF } from '@react-three/drei';
 
 type Props = {
@@ -14,5 +13,6 @@ export default function SimpleGLTFModel({
 }: Props) {
   const model = useGLTF(src);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return <primitive object={(model as any).scene} position={position} scale={scale} />;
 }

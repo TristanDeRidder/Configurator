@@ -17,6 +17,17 @@ import {
   LUMEN_EAR_NO_JACK,
 } from "../utils/models";
 
+const MATERIAL_PRESETS: Record<string, { roughness: number; metalness: number }> = {
+  aluminum: { roughness: 0.6, metalness: 0.5 },
+  titanium: { roughness: 0.45, metalness: 0.85 },
+};
+
+const COLOR_MAP: Record<string, string> = {
+  black: "#1a1a1a",
+  silver: "#c0c0c0",
+  beige: "#E7E5C4",
+};
+
 const ConfiguratorHeadphone = ({ modelId }: { modelId?: string }) => {
   const selectedCushion = useConfiguratorStore((state) => state.selectedCushion);
   const selectedColor = useConfiguratorStore((state) => state.selectedColor);
@@ -57,19 +68,6 @@ const ConfiguratorHeadphone = ({ modelId }: { modelId?: string }) => {
   const targetRoughnessRef = useRef(0.6);
   const targetMetalnessRef = useRef(0.5);
 
-  // Material finish presets (tweak as desired)
-  const MATERIAL_PRESETS: Record<string, { roughness: number; metalness: number }> = {
-    aluminum: { roughness: 0.6, metalness: 0.5 }, 
-    titanium: { roughness: 0.45, metalness: 0.85 },
-  };
-
-  // Color mapping
-  const colorMap: Record<string, string> = {
-    black: "#1a1a1a",
-    silver: "#c0c0c0",
-    beige: "#E7E5C4",
-  };
-
   // Changeable material names
   const COLORABLE_MATERIALS = [
     'Headphone',
@@ -90,7 +88,7 @@ const ConfiguratorHeadphone = ({ modelId }: { modelId?: string }) => {
 
   // Update target color
   useEffect(() => {
-    const hexColor = colorMap[selectedColor] || colorMap.black;
+    const hexColor = COLOR_MAP[selectedColor] || COLOR_MAP.black;
     targetColorRef.current.set(hexColor);
   }, [selectedColor]);
 

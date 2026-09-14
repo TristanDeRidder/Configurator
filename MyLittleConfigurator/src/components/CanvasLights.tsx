@@ -1,8 +1,10 @@
-import React from 'react';
 import { Environment } from '@react-three/drei';
+import type { ComponentProps } from 'react';
+
+type EnvironmentPreset = ComponentProps<typeof Environment>['preset'];
 
 type Props = {
-  preset?: string;
+  preset?: EnvironmentPreset;
   directionalIntensity?: number;
   ambientIntensity?: number;
 };
@@ -16,7 +18,7 @@ export default function CanvasLights({
     <>
       <directionalLight position={[1, 2, 3]} intensity={directionalIntensity} />
       <ambientLight intensity={ambientIntensity} />
-      <Environment preset={preset as any} />
+      <Environment preset={preset} />
     </>
   );
 }
